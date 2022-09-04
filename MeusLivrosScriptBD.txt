@@ -1,0 +1,152 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema meuslivros
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `meuslivros` ;
+
+-- -----------------------------------------------------
+-- Schema meuslivros
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `meuslivros` DEFAULT CHARACTER SET utf8 ;
+USE `meuslivros` ;
+
+-- -----------------------------------------------------
+-- Table `meuslivros`.`Animal`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meuslivros`.`Animal` ;
+
+CREATE TABLE IF NOT EXISTS `meuslivros`.`Animal` (
+  `idAnimal` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(120) NULL,
+  `nascimento` DATE NULL,
+  `sexo` VARCHAR(45) NULL,
+  `porte` VARCHAR(45) NULL,
+  `pelo` VARCHAR(45) NULL,
+  `raca` VARCHAR(45) NULL,
+  `especie` VARCHAR(45) NULL,
+  `obs` VARCHAR(45) NULL)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `meuslivros`.`pessoa`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meuslivros`.`pessoa` ;
+
+CREATE TABLE IF NOT EXISTS `meuslivros`.`pessoa` (
+  `idpessoa` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(120) NULL,
+  `telefone` VARCHAR(45) NULL,
+  `email` VARCHAR(75) NULL,
+  PRIMARY KEY (`idpessoa`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `meuslivros`.`usuario`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meuslivros`.`usuario` ;
+
+CREATE TABLE IF NOT EXISTS `meuslivros`.`usuario` (
+  `idusuario` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(120) NULL,
+  `login` VARCHAR(45) NULL,
+  `senha` VARCHAR(45) NULL,
+  PRIMARY KEY (`idusuario`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `meuslivros`.`biblioteca`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meuslivros`.`biblioteca` ;
+
+CREATE TABLE IF NOT EXISTS `meuslivros`.`biblioteca` (
+  `idbiblioteca` INT NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(45) NULL,
+  `usuario_idusuario` INT NOT NULL,
+  PRIMARY KEY (`idbiblioteca`),
+  INDEX `fk_biblioteca_usuario_idx` (`usuario_idusuario` ASC),
+  CONSTRAINT `fk_biblioteca_usuario`
+    FOREIGN KEY (`usuario_idusuario`)
+    REFERENCES `meuslivros`.`usuario` (`idusuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `meuslivros`.`livro`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meuslivros`.`livro` ;
+
+CREATE TABLE IF NOT EXISTS `meuslivros`.`livro` (
+  `idlivro` INT NOT NULL AUTO_INCREMENT,
+  `isbn` VARCHAR(45) NULL,
+  `titulo` VARCHAR(120) NULL,
+  `autor` VARCHAR(120) NULL,
+  `editora` VARCHAR(45) NULL,
+  `edicao` VARCHAR(45) NULL,
+  `ano` DATE NULL,
+  `assunto` VARCHAR(120) NULL,
+  `biblioteca_idbiblioteca` INT NOT NULL,
+  PRIMARY KEY (`idlivro`),
+  INDEX `fk_livro_biblioteca1_idx` (`biblioteca_idbiblioteca` ASC),
+  CONSTRAINT `fk_livro_biblioteca1`
+    FOREIGN KEY (`biblioteca_idbiblioteca`)
+    REFERENCES `meuslivros`.`biblioteca` (`idbiblioteca`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `meuslivros`.`pessoa`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meuslivros`.`pessoa` ;
+
+CREATE TABLE IF NOT EXISTS `meuslivros`.`pessoa` (
+  `idpessoa` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(120) NULL,
+  `telefone` VARCHAR(45) NULL,
+  `email` VARCHAR(75) NULL,
+  PRIMARY KEY (`idpessoa`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `meuslivros`.`movimento`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meuslivros`.`movimento` ;
+
+CREATE TABLE IF NOT EXISTS `meuslivros`.`movimento` (
+  `idmovimento` INT NOT NULL AUTO_INCREMENT,
+  `saida` DATE NULL,
+  `retorno` DATE NULL,
+  `livro_idlivro` INT NOT NULL,
+  `pessoa_idpessoa` INT NOT NULL,
+  `controle` CHAR(1) NULL,
+  PRIMARY KEY (`idmovimento`),
+  INDEX `fk_movimento_livro1_idx` (`livro_idlivro` ASC),
+  INDEX `fk_movimento_pessoa1_idx` (`pessoa_idpessoa` ASC),
+  CONSTRAINT `fk_movimento_livro1`
+    FOREIGN KEY (`livro_idlivro`)
+    REFERENCES `meuslivros`.`livro` (`idlivro`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_movimento_pessoa1`
+    FOREIGN KEY (`pessoa_idpessoa`)
+    REFERENCES `meuslivros`.`pessoa` (`idpessoa`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
