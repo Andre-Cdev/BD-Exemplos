@@ -1,0 +1,676 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema caomiau
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema caomiau
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `caomiau` DEFAULT CHARACTER SET utf8 ;
+USE `caomiau` ;
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`colaborador`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`colaborador` (
+  `idcolaborador` INT(11) NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(20) NULL DEFAULT NULL,
+  `rg` VARCHAR(20) NULL DEFAULT NULL,
+  `cpf` VARCHAR(20) NULL DEFAULT NULL,
+  `email` VARCHAR(120) NULL DEFAULT NULL,
+  `telefone` VARCHAR(20) NULL DEFAULT NULL,
+  `logradouro` VARCHAR(120) NULL DEFAULT NULL,
+  `numero` VARCHAR(10) NULL DEFAULT NULL,
+  `complemento` VARCHAR(45) NULL DEFAULT NULL,
+  `cep` VARCHAR(20) NULL DEFAULT NULL,
+  `bairro` VARCHAR(120) NULL DEFAULT NULL,
+  `cidade` VARCHAR(120) NULL DEFAULT NULL,
+  `uf` CHAR(2) NULL DEFAULT NULL,
+  `tipo` VARCHAR(45) NULL DEFAULT NULL,
+  `celular` VARCHAR(20) NULL DEFAULT NULL,
+  `login` VARCHAR(45) NULL DEFAULT NULL,
+  `senha` VARCHAR(120) NULL DEFAULT NULL,
+  PRIMARY KEY (`idcolaborador`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`especie`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`especie` (
+  `idespecie` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`idespecie`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`pessoa`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`pessoa` (
+  `idpessoa` INT(11) NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(20) NULL DEFAULT NULL,
+  `rg` VARCHAR(20) NULL DEFAULT NULL,
+  `cpf` VARCHAR(20) NULL DEFAULT NULL,
+  `email` VARCHAR(120) NULL DEFAULT NULL,
+  `telefone` VARCHAR(20) NULL DEFAULT NULL,
+  `logradouro` VARCHAR(120) NULL DEFAULT NULL,
+  `numero` VARCHAR(10) NULL DEFAULT NULL,
+  `complemento` VARCHAR(45) NULL DEFAULT NULL,
+  `cep` VARCHAR(20) NULL DEFAULT NULL,
+  `bairro` VARCHAR(120) NULL DEFAULT NULL,
+  `cidade` VARCHAR(120) NULL DEFAULT NULL,
+  `uf` CHAR(2) NULL DEFAULT NULL,
+  `tipo` VARCHAR(45) NULL DEFAULT NULL,
+  `celular` VARCHAR(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`idpessoa`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`prontuario_cab`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`prontuario_cab` (
+  `idprontuario_cab` INT(11) NOT NULL AUTO_INCREMENT,
+  `animal_id` INT(11) NULL DEFAULT NULL,
+  `pessoa_id` INT(11) NULL DEFAULT NULL,
+  `colaborador_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`idprontuario_cab`),
+  INDEX `FK_ANIMAL_PRONT_idx` (`animal_id` ASC),
+  INDEX `FK_COL_PRONT_idx` (`colaborador_id` ASC),
+  INDEX `FK_PESSOA_ATEND_idx` (`pessoa_id` ASC),
+  INDEX `FK_PESSOA_PRONT_idx` (`pessoa_id` ASC),
+  CONSTRAINT `FK_ANIMAL_PRONT`
+    FOREIGN KEY (`animal_id`)
+    REFERENCES `caomiau`.`animal` (`idanimal`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_COL_PRONT`
+    FOREIGN KEY (`colaborador_id`)
+    REFERENCES `caomiau`.`colaborador` (`idcolaborador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PESSOA_PRONT`
+    FOREIGN KEY (`pessoa_id`)
+    REFERENCES `caomiau`.`pessoa` (`idpessoa`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`raca`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`raca` (
+  `idraca` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(120) NULL DEFAULT NULL,
+  PRIMARY KEY (`idraca`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`animal`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`animal` (
+  `idanimal` INT(11) NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(120) NULL DEFAULT NULL,
+  `sexo` CHAR(1) NULL DEFAULT NULL,
+  `nascimento` DATE NULL DEFAULT NULL,
+  `prontuario_cab_id` INT(11) NULL DEFAULT NULL,
+  `especie_id` INT(11) NULL DEFAULT NULL,
+  `raca_id` INT(11) NULL DEFAULT NULL,
+  `pessoa_id` INT(11) NULL DEFAULT NULL,
+  `colaborador_id` INT(11) NULL DEFAULT NULL,
+  `porte` VARCHAR(45) NULL DEFAULT NULL,
+  `pelo` VARCHAR(45) NULL DEFAULT NULL,
+  `obs` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`idanimal`),
+  INDEX `FK_ESPECIE_ANIMAL_idx` (`especie_id` ASC),
+  INDEX `FK_RACA_ANIMAL_idx` (`raca_id` ASC),
+  INDEX `FK_COL_ANIMAL_idx` (`colaborador_id` ASC),
+  INDEX `FK_PESSOA_ANIMAL_idx` (`pessoa_id` ASC),
+  INDEX `FK_PRONT_ANIMAL_idx` (`prontuario_cab_id` ASC),
+  CONSTRAINT `FK_COL_ANIMAL`
+    FOREIGN KEY (`colaborador_id`)
+    REFERENCES `caomiau`.`colaborador` (`idcolaborador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_ESPECIE_ANIMAL`
+    FOREIGN KEY (`especie_id`)
+    REFERENCES `caomiau`.`especie` (`idespecie`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PESSOA_ANIMAL`
+    FOREIGN KEY (`pessoa_id`)
+    REFERENCES `caomiau`.`pessoa` (`idpessoa`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PRONT_ANIMAL`
+    FOREIGN KEY (`prontuario_cab_id`)
+    REFERENCES `caomiau`.`prontuario_cab` (`idprontuario_cab`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_RACA_ANIMAL`
+    FOREIGN KEY (`raca_id`)
+    REFERENCES `caomiau`.`raca` (`idraca`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`atendimento_cab`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`atendimento_cab` (
+  `idatendimento_cab` INT(11) NOT NULL AUTO_INCREMENT,
+  `data` DATE NULL DEFAULT NULL,
+  `animal_id` INT(11) NULL DEFAULT NULL,
+  `pessoa_id` INT(11) NULL DEFAULT NULL,
+  `colaborador_id` INT(11) NULL DEFAULT NULL,
+  `valor_total` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idatendimento_cab`),
+  INDEX `FK_ANIMAL_ATEND_idx` (`animal_id` ASC),
+  INDEX `FK_COL_ATEND_idx` (`colaborador_id` ASC),
+  INDEX `FK_PESSOA_ATEND_idx` (`pessoa_id` ASC),
+  CONSTRAINT `FK_ANIMAL_ATEND`
+    FOREIGN KEY (`animal_id`)
+    REFERENCES `caomiau`.`animal` (`idanimal`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_COL_ATEND`
+    FOREIGN KEY (`colaborador_id`)
+    REFERENCES `caomiau`.`colaborador` (`idcolaborador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PESSOA_ATEND`
+    FOREIGN KEY (`pessoa_id`)
+    REFERENCES `caomiau`.`pessoa` (`idpessoa`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 11
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`um`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`um` (
+  `idum` INT(11) NOT NULL AUTO_INCREMENT,
+  `sigla` VARCHAR(10) NULL DEFAULT NULL,
+  `descrcao` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`idum`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`produto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`produto` (
+  `idproduto` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(120) NULL DEFAULT NULL,
+  `tipo` VARCHAR(45) NULL DEFAULT NULL,
+  `um_id` INT(11) NULL DEFAULT NULL,
+  `custo` DOUBLE(11,2) NULL DEFAULT NULL,
+  `valor` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idproduto`),
+  INDEX `FK_UM_PROD_idx` (`um_id` ASC),
+  CONSTRAINT `FK_UM_PROD`
+    FOREIGN KEY (`um_id`)
+    REFERENCES `caomiau`.`um` (`idum`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`atendimento_det`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`atendimento_det` (
+  `idatendimento_det` INT(11) NOT NULL AUTO_INCREMENT,
+  `atendimento_cab_id` INT(11) NULL DEFAULT NULL,
+  `produto_id` INT(11) NULL DEFAULT NULL,
+  `qtde` INT(11) NULL DEFAULT NULL,
+  `valor` DOUBLE(11,2) NULL DEFAULT NULL,
+  `valor_total` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idatendimento_det`),
+  INDEX `FK_CAB_DET_ATEND_idx` (`atendimento_cab_id` ASC),
+  INDEX `FK_PRODUTO_ATEND_idx` (`produto_id` ASC),
+  CONSTRAINT `FK_CAB_DET_ATEND`
+    FOREIGN KEY (`atendimento_cab_id`)
+    REFERENCES `caomiau`.`atendimento_cab` (`idatendimento_cab`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PRODUTO_ATEND`
+    FOREIGN KEY (`produto_id`)
+    REFERENCES `caomiau`.`produto` (`idproduto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 17
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`banco`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`banco` (
+  `idbanco` INT(11) NOT NULL,
+  `descricao` VARCHAR(120) NULL DEFAULT NULL,
+  `agencia` VARCHAR(45) NULL DEFAULT NULL,
+  `conta` VARCHAR(45) NULL DEFAULT NULL,
+  `contato` VARCHAR(45) NULL DEFAULT NULL,
+  `telefone` VARCHAR(45) NULL DEFAULT NULL,
+  `email` VARCHAR(120) NULL DEFAULT NULL,
+  PRIMARY KEY (`idbanco`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`fornecedor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`fornecedor` (
+  `idfornecedor` INT(11) NOT NULL AUTO_INCREMENT,
+  `razao` VARCHAR(20) NULL DEFAULT NULL,
+  `fantasia` VARCHAR(120) NULL DEFAULT NULL,
+  `cnpj` VARCHAR(20) NULL DEFAULT NULL,
+  `ie` VARCHAR(20) NULL DEFAULT NULL,
+  `im` VARCHAR(20) NULL DEFAULT NULL,
+  `email` VARCHAR(120) NULL DEFAULT NULL,
+  `telefone` VARCHAR(20) NULL DEFAULT NULL,
+  `logradouro` VARCHAR(120) NULL DEFAULT NULL,
+  `numero` VARCHAR(10) NULL DEFAULT NULL,
+  `complemento` VARCHAR(45) NULL DEFAULT NULL,
+  `cep` VARCHAR(20) NULL DEFAULT NULL,
+  `bairro` VARCHAR(120) NULL DEFAULT NULL,
+  `cidade` VARCHAR(120) NULL DEFAULT NULL,
+  `uf` CHAR(2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idfornecedor`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`compra_cab`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`compra_cab` (
+  `idcompra_cab` INT(11) NOT NULL AUTO_INCREMENT,
+  `fornecedor_id` INT(11) NULL DEFAULT NULL,
+  `num_doc` VARCHAR(20) NULL DEFAULT NULL,
+  `data_emissao` DATE NULL DEFAULT NULL,
+  `data_entrada` DATE NULL DEFAULT NULL,
+  `total` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idcompra_cab`),
+  INDEX `FK_FORNECEDOR_COMPRA_idx` (`fornecedor_id` ASC),
+  CONSTRAINT `FK_FORNECEDOR_COMPRA`
+    FOREIGN KEY (`fornecedor_id`)
+    REFERENCES `caomiau`.`fornecedor` (`idfornecedor`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`compra_det`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`compra_det` (
+  `idcompra_det` INT(11) NOT NULL AUTO_INCREMENT,
+  `compra_cab_id` INT(11) NULL DEFAULT NULL,
+  `produto_id` INT(11) NULL DEFAULT NULL,
+  `qtde` INT(11) NULL DEFAULT NULL,
+  `vlr_unit` DOUBLE(11,2) NULL DEFAULT NULL,
+  `vlr_total` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idcompra_det`),
+  INDEX `FK_CAB_DET_COMPRA_idx` (`compra_cab_id` ASC),
+  INDEX `FK_PRODUTO_COMPRA_idx` (`produto_id` ASC),
+  CONSTRAINT `FK_CAB_DET_COMPRA`
+    FOREIGN KEY (`compra_cab_id`)
+    REFERENCES `caomiau`.`compra_cab` (`idcompra_cab`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PRODUTO_COMPRA`
+    FOREIGN KEY (`produto_id`)
+    REFERENCES `caomiau`.`produto` (`idproduto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 9
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`fechamento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`fechamento` (
+  `idfechamento` INT(11) NOT NULL AUTO_INCREMENT,
+  `data` DATE NULL DEFAULT NULL,
+  `saldo_anterior` DOUBLE(11,2) NULL DEFAULT NULL,
+  `vlr_recebimentos` DOUBLE(11,2) NULL DEFAULT NULL,
+  `vlr_pagamentos` DOUBLE(11,2) NULL DEFAULT NULL,
+  `vlr_saldo_conta` DOUBLE(11,2) NULL DEFAULT NULL,
+  `vlr_saldo_real` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idfechamento`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`modulo_acesso`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`modulo_acesso` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `colaborador_id` INT(11) NULL DEFAULT NULL,
+  `modulo` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 34
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`movimento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`movimento` (
+  `idmovimento` INT(11) NOT NULL AUTO_INCREMENT,
+  `banco_id` INT(11) NULL DEFAULT NULL,
+  `data` DATE NULL DEFAULT NULL,
+  `num_doc` VARCHAR(20) NULL DEFAULT NULL,
+  `data_lancamento` DATE NULL DEFAULT NULL,
+  `historico` VARCHAR(50) NULL DEFAULT NULL,
+  `vlr_doc` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idmovimento`),
+  INDEX `FK_BANCO_MOV_idx` (`banco_id` ASC),
+  CONSTRAINT `FK_BANCO_MOV`
+    FOREIGN KEY (`banco_id`)
+    REFERENCES `caomiau`.`banco` (`idbanco`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`nivel_acesso`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`nivel_acesso` (
+  `idnivel_acesso` INT(11) NOT NULL AUTO_INCREMENT,
+  `colaborador_id` INT(11) NULL DEFAULT NULL,
+  `modulo` VARCHAR(50) NULL DEFAULT NULL,
+  PRIMARY KEY (`idnivel_acesso`),
+  INDEX `FK_COL_ACESSO_idx` (`colaborador_id` ASC),
+  CONSTRAINT `FK_COL_ACESSO`
+    FOREIGN KEY (`colaborador_id`)
+    REFERENCES `caomiau`.`colaborador` (`idcolaborador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`ong`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`ong` (
+  `idong` INT(11) NOT NULL AUTO_INCREMENT,
+  `razao` VARCHAR(20) NULL DEFAULT NULL,
+  `fantasia` VARCHAR(120) NULL DEFAULT NULL,
+  `cnpj` VARCHAR(20) NULL DEFAULT NULL,
+  `ie` VARCHAR(20) NULL DEFAULT NULL,
+  `im` VARCHAR(20) NULL DEFAULT NULL,
+  `email` VARCHAR(120) NULL DEFAULT NULL,
+  `telefone` VARCHAR(20) NULL DEFAULT NULL,
+  `logradouro` VARCHAR(120) NULL DEFAULT NULL,
+  `numero` VARCHAR(10) NULL DEFAULT NULL,
+  `complemento` VARCHAR(45) NULL DEFAULT NULL,
+  `cep` VARCHAR(20) NULL DEFAULT NULL,
+  `bairro` VARCHAR(120) NULL DEFAULT NULL,
+  `cidade` VARCHAR(120) NULL DEFAULT NULL,
+  `uf` CHAR(2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idong`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`pagamento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`pagamento` (
+  `idpagamento` INT(11) NOT NULL AUTO_INCREMENT,
+  `banco_id` INT(11) NULL DEFAULT NULL,
+  `fornecedor_id` INT(11) NULL DEFAULT NULL,
+  `num_doc` VARCHAR(20) NULL DEFAULT NULL,
+  `vlr_total` DOUBLE(11,2) NULL DEFAULT NULL,
+  `juro` DOUBLE(11,2) NULL DEFAULT NULL,
+  `multa` DOUBLE(11,2) NULL DEFAULT NULL,
+  `desconto` DOUBLE(11,2) NULL DEFAULT NULL,
+  `vlr_pagamento` DOUBLE(11,2) NULL DEFAULT NULL,
+  `data_emissao` DATE NULL DEFAULT NULL,
+  `data_lancamento` DATE NULL DEFAULT NULL,
+  `vencimento` DATE NULL DEFAULT NULL,
+  `data_pagamento` DATE NULL DEFAULT NULL,
+  PRIMARY KEY (`idpagamento`),
+  INDEX `FK_BANCO_PAGTO_idx` (`banco_id` ASC),
+  INDEX `FK_FORNECEDOR_PAGTO_idx` (`fornecedor_id` ASC),
+  CONSTRAINT `FK_BANCO_PAGTO`
+    FOREIGN KEY (`banco_id`)
+    REFERENCES `caomiau`.`banco` (`idbanco`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_FORNECEDOR_PAGTO`
+    FOREIGN KEY (`fornecedor_id`)
+    REFERENCES `caomiau`.`fornecedor` (`idfornecedor`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`peso`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`peso` (
+  `idpeso` INT(11) NOT NULL AUTO_INCREMENT,
+  `animal_id` INT(11) NULL DEFAULT NULL,
+  `data` DATE NULL DEFAULT NULL,
+  `peso` DOUBLE(11,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`idpeso`),
+  INDEX `FK_ANIMAL_PESO_idx` (`animal_id` ASC),
+  CONSTRAINT `FK_ANIMAL_PESO`
+    FOREIGN KEY (`animal_id`)
+    REFERENCES `caomiau`.`animal` (`idanimal`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`vacina`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`vacina` (
+  `idvacina` INT(11) NOT NULL AUTO_INCREMENT,
+  `data` DATE NULL DEFAULT NULL,
+  `produto_id` INT(11) NULL DEFAULT NULL,
+  `animal_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`idvacina`),
+  INDEX `FK_PROD_VAC_idx` (`produto_id` ASC),
+  INDEX `FK_ANIMAL_VAC_idx` (`animal_id` ASC),
+  CONSTRAINT `FK_ANIMAL_VAC`
+    FOREIGN KEY (`animal_id`)
+    REFERENCES `caomiau`.`animal` (`idanimal`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PROD_VAC`
+    FOREIGN KEY (`produto_id`)
+    REFERENCES `caomiau`.`produto` (`idproduto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`prontuario_det`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`prontuario_det` (
+  `idprontuario_det` INT(11) NOT NULL AUTO_INCREMENT,
+  `prontuario_cab_id` INT(11) NULL DEFAULT NULL,
+  `vacina_id` INT(11) NULL DEFAULT NULL,
+  `peso_id` INT(11) NULL DEFAULT NULL,
+  `atendimento_cab_id` INT(11) NULL DEFAULT NULL,
+  `obs` VARCHAR(250) NULL DEFAULT NULL,
+  PRIMARY KEY (`idprontuario_det`),
+  INDEX `FK_VAC_PRONT_idx` (`vacina_id` ASC),
+  INDEX `FK_PESO_PRONT_idx` (`peso_id` ASC),
+  INDEX `FK_ATEND_PRONT_idx` (`atendimento_cab_id` ASC),
+  INDEX `FK_CAB_DET_PRONT_idx` (`prontuario_cab_id` ASC),
+  CONSTRAINT `FK_ATEND_PRONT`
+    FOREIGN KEY (`atendimento_cab_id`)
+    REFERENCES `caomiau`.`atendimento_cab` (`idatendimento_cab`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_CAB_DET_PRONT`
+    FOREIGN KEY (`prontuario_cab_id`)
+    REFERENCES `caomiau`.`prontuario_cab` (`idprontuario_cab`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PESO_PRONT`
+    FOREIGN KEY (`peso_id`)
+    REFERENCES `caomiau`.`peso` (`idpeso`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_VAC_PRONT`
+    FOREIGN KEY (`vacina_id`)
+    REFERENCES `caomiau`.`vacina` (`idvacina`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`recebimento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`recebimento` (
+  `idrecebimento` INT(11) NOT NULL AUTO_INCREMENT,
+  `banco_id` INT(11) NULL DEFAULT NULL,
+  `pessoa_id` INT(11) NULL DEFAULT NULL COMMENT 'codigo do cliente - auto-incremento',
+  `num_doc` VARCHAR(20) NULL DEFAULT NULL,
+  `vlr_total` DOUBLE(11,2) NULL DEFAULT NULL,
+  `juro` DOUBLE(11,2) NULL DEFAULT NULL,
+  `multa` DOUBLE(11,2) NULL DEFAULT NULL,
+  `desconto` DOUBLE(11,2) NULL DEFAULT NULL,
+  `vlr_recebido` DOUBLE(11,2) NULL DEFAULT NULL,
+  `data_emissao` DATE NULL DEFAULT NULL,
+  `data_lancamento` DATE NULL DEFAULT NULL,
+  `data_vencimento` DATE NULL DEFAULT NULL,
+  `data_recebimento` DATE NULL DEFAULT NULL,
+  PRIMARY KEY (`idrecebimento`),
+  INDEX `FK_BANCO_REC_idx` (`banco_id` ASC),
+  INDEX `FK_PESSOA_REC_idx` (`pessoa_id` ASC),
+  CONSTRAINT `FK_BANCO_REC`
+    FOREIGN KEY (`banco_id`)
+    REFERENCES `caomiau`.`banco` (`idbanco`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PESSOA_REC`
+    FOREIGN KEY (`pessoa_id`)
+    REFERENCES `caomiau`.`pessoa` (`idpessoa`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`venda_cab`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`venda_cab` (
+  `idvenda_cab` INT(11) NOT NULL AUTO_INCREMENT,
+  `pessoa_id` INT(11) NULL DEFAULT NULL,
+  `colaborador_id` INT(11) NULL DEFAULT NULL,
+  `data` DATE NULL DEFAULT NULL,
+  `valor_venda` DOUBLE(11,2) NULL DEFAULT NULL,
+  `desconto` DOUBLE(11,2) NULL DEFAULT NULL,
+  `total` DOUBLE(11,2) NULL DEFAULT NULL,
+  `num_parcelas` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`idvenda_cab`),
+  INDEX `FK_COL_VEND_idx` (`colaborador_id` ASC),
+  INDEX `FK_PESSOA_VEND_idx` (`pessoa_id` ASC),
+  CONSTRAINT `FK_COL_VEND`
+    FOREIGN KEY (`colaborador_id`)
+    REFERENCES `caomiau`.`colaborador` (`idcolaborador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PESSOA_VEND`
+    FOREIGN KEY (`pessoa_id`)
+    REFERENCES `caomiau`.`pessoa` (`idpessoa`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 15
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `caomiau`.`venda_det`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `caomiau`.`venda_det` (
+  `idvenda_det` INT(11) NOT NULL AUTO_INCREMENT,
+  `produto_id` INT(11) NULL DEFAULT NULL,
+  `qtde` INT(11) NULL DEFAULT NULL,
+  `valor_unit` DOUBLE(11,2) NULL DEFAULT NULL,
+  `valor_total` DOUBLE(11,2) NULL DEFAULT NULL,
+  `venda_cab_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`idvenda_det`),
+  INDEX `FK_PROD_VEND_idx` (`produto_id` ASC),
+  INDEX `FK_CAB_DET_VEND_idx` (`venda_cab_id` ASC),
+  CONSTRAINT `FK_CAB_DET_VEND`
+    FOREIGN KEY (`venda_cab_id`)
+    REFERENCES `caomiau`.`venda_cab` (`idvenda_cab`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PROD_VEND`
+    FOREIGN KEY (`produto_id`)
+    REFERENCES `caomiau`.`produto` (`idproduto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 13
+DEFAULT CHARACTER SET = latin1;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
