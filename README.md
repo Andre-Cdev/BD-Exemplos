@@ -1,4 +1,3 @@
-# BD-Exemplos
 # CaoMiau
 
 Este projeto foi criado com o intuito de contribuir para ONG Protetora de Animais.
